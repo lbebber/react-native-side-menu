@@ -3,6 +3,9 @@ const React = require('react-native');
 const {
   StyleSheet,
 } = React;
+const {
+  Animated,
+} = React;
 
 const absoluteStretch = {
     position: 'absolute',
@@ -29,6 +32,6 @@ module.exports = StyleSheet.create({
   },
   overlay: {
     ...absoluteStretch,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
 });

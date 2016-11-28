@@ -2,13 +2,14 @@
 const styles = require('./styles');
 const ReactNative = require('react-native');
 const React = require('react');
-const { Dimensions, Animated, } = ReactNative;
+const { Dimensions, Animated, Text, } = ReactNative;
 const deviceScreen = Dimensions.get('window');
 
 const {
   PanResponder,
   View,
   TouchableWithoutFeedback,
+  StyleSheet,
 } = ReactNative;
 
 /**
@@ -184,15 +185,21 @@ class SideMenu extends React.Component {
    * @return {React.Component}
    */
   getContentView() {
-    let overlay = null;
-
-    if (this.isOpen) {
-      overlay = (
-        <TouchableWithoutFeedback onPress={() => this.openMenu(false)}>
-          <View style={styles.overlay} />
-        </TouchableWithoutFeedback>
-      );
-    }
+    const overlay = (
+      <TouchableWithoutFeedback 
+        onPress={() => this.openMenu(false)}
+      >
+      <Animated.View 
+        style={{...StyleSheet.flatten(styles.overlay),
+          opacity:this.state.left.interpolate({
+            inputRange:[0,this.props.openMenuOffset],
+            outputRange:[0,1],
+          }),
+        }}
+        pointerEvents={this.isOpen?'auto':'none'}
+      />
+      </TouchableWithoutFeedback>
+    );
 
     const { width, height, } = this.state;
     const ref = (sideMenu) => this.sideMenu = sideMenu;
@@ -204,7 +211,23 @@ class SideMenu extends React.Component {
 
     return (
       <Animated.View style={style} ref={ref} {...this.responder.panHandlers}>
-        {this.props.children}
+        <Animated.View 
+          style={{
+            position:'absolute',
+            left:0,
+            top:0,
+            bottom:0,
+            right:0,
+            transform:[
+              {translateX:this.state.left.interpolate({
+                inputRange:[0,this.props.openMenuOffset],
+                outputRange:[0,-this.props.openMenuOffset/2],
+              })},
+            ]
+          }}
+        >
+          {this.props.children}
+        </Animated.View>
         {overlay}
       </Animated.View>
     );
@@ -271,13 +294,13 @@ SideMenu.defaultProps = {
     };
   },
   animationFunction: (prop, value) => {
-    return Animated.spring(
+    return Animated.timing(
       prop,
       {
-        toValue: value,
-        friction: 8,
+        toValue:value,
+        duration:300,
       }
-    );
+    )
   },
   bounceBackOnOverdraw: true,
 };

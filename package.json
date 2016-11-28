@@ -1,5 +1,5 @@
 {
-  "name": "react-native-side-menu",
+  "name": "@lbebber/react-native-side-menu",
   "version": "0.20.1",
   "description": "Simple customizable component to create side menu",
   "main": "index.js",
@@ -8,12 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-native-fellowship/react-native-side-menu.git"
+    "url": "git@github.com:lbebber/react-native-side-menu.git"
   },
   "keywords": [
     "react-native",
     "react-component",
     "ios",
+    "android",
     "sidebar"
   ],
   "devDependencies": {
@@ -23,7 +24,7 @@
   "author": "Alexey Kureev <kureev-mail@ya.ru> (https://github.com/Kureev)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/react-native-fellowship/react-native-side-menu/issues"
+    "url": "https://github.com/lbebber/react-native-side-menu/issues"
   },
-  "homepage": "https://github.com/react-native-fellowship/react-native-side-menu"
+  "homepage": "https://github.com/lbebber/react-native-side-menu"
 }
