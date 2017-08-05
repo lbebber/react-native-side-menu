@@ -2,8 +2,10 @@
 const styles = require('./styles');
 const ReactNative = require('react-native');
 const React = require('react');
-const { Dimensions, Animated, Text, } = ReactNative;
+const { Dimensions, Animated, Text, BackHandler, } = ReactNative;
 const deviceScreen = Dimensions.get('window');
+import {StatusBar} from 'react-native';
+import Hamburger from '@lbebber/react-native-hamburger';
 
 const {
   PanResponder,
@@ -56,6 +58,7 @@ class SideMenu extends React.Component {
         props.isOpen ? props.openMenuOffset * initialMenuPositionMultiplier : props.hiddenMenuOffset
       ),
     };
+
   }
 
   /**
@@ -178,6 +181,14 @@ class SideMenu extends React.Component {
 
     this.forceUpdate();
     this.props.onChange(isOpen);
+
+    BackHandler.addEventListener('hardwareBackPress',event=>{
+      if(this.isOpen){
+        this.openMenu(false);
+        return true;
+      }
+      return false;
+    });
   }
 
   /**
@@ -250,10 +261,49 @@ class SideMenu extends React.Component {
       {left: this.state.width - this.state.openMenuOffset} :
       {right: this.state.width - this.state.openMenuOffset} ;
 
-    const menu = <View style={[styles.menu, boundryStyle]}>{this.props.menu}</View>;
+    const menu = <Animated.View style={[styles.menu, boundryStyle,{
+      transform:[
+        {translateX:this.state.left.interpolate({
+          inputRange:[0,this.props.openMenuOffset],
+          outputRange:[-this.props.openMenuOffset,0],
+        })},
+      ],
+    }]}>
+      <View style={{
+        height:StatusBar.currentHeight,
+        backgroundColor:this.props.background,
+      }}>
+      </View>
+      <View
+        style={{
+          height:50,
+          alignItems:'center',
+          backgroundColor:this.props.background,
+          flexDirection:'row',
+        }}
+      >
+        <Hamburger 
+          color={this.props.color}
+          type="cross" 
+          onPress={()=>this.openMenu(false)}
+        />
+        {this.props.title!=null &&
+          <Text
+            style={{
+              color:this.props.color,
+              fontSize:18,
+              fontWeight:'bold',
+            }}
+          >
+            {this.props.title}
+          </Text>
+        }
+      </View>
+      {this.props.menu}
+    </Animated.View>;
 
     return (
-      <View style={styles.container} onLayout={this.onLayoutChange.bind(this)}>
+      <View style={styles.container} onLayout={this.onLayoutChange.bind(this)} {...this.responder.panHandlers}>
         {menu}
         {this.getContentView()}
       </View>
@@ -278,6 +328,9 @@ SideMenu.propTypes = {
 };
 
 SideMenu.defaultProps = {
+  background:'transparent',
+  color:'black',
+  title:null,
   toleranceY: 10,
   toleranceX: 10,
   edgeHitWidth: 60,
