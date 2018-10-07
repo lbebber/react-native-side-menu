@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/lbebber/react-native-side-menu/issues"
   },
-  "homepage": "https://github.com/lbebber/react-native-side-menu"
+  "homepage": "https://github.com/lbebber/react-native-side-menu",
+  "dependencies": {
+    "prop-types": "^15.6.2"
+  }
 }
